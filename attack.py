@@ -35,6 +35,23 @@ class AGroup:
     aliases: list = field(default_factory=list)
     ref: str = ""
     
+@dataclass
+class ASoftware:
+    name: str
+    description: str = ""
+    id: str = ""
+    aliases: list = field(default_factory=list)
+    platforms: list = field(default_factory=list)
+    ref: str = ""
+    
+@dataclass
+class ADatasource:
+    name: str
+    id: str = ""
+    description: str = ""
+    collection_layers: list = field(default_factory=list)
+    platforms: list = field(default_factory=list)
+    ref: str = ""
     
 class Attack:
     
@@ -52,6 +69,8 @@ class Attack:
         self.parse_techniques()
         self.parse_groups()
         self.parse_relations()
+        self.parse_software()
+        self.parse_data_sources()
 
     def load_config(self, filename='config.json'):
         with open(filename, 'r') as file:
@@ -176,3 +195,73 @@ class Attack:
             self.relations.append(
                 ARelation(**data)
             )
+            
+    def parse_software(self):
+        self.software = {}
+        for obj in self.collections['malware']:
+
+            if 'revoked' in obj and obj['revoked']: continue
+            if 'x-mitre-deprecated' in obj and obj['x-mitre-deprecated']: continue
+            
+            id = Attack.get_id(obj['external_references'])
+            
+            soft = {
+                    'name': obj['name'],
+                    'id': id,
+                    'ref': obj['id'],
+                    'description': obj['description'],
+                    'aliases': obj.get('x_mitre_aliases', []),
+                    'platforms': obj.get('x_mitre_platforms', [])
+                }
+
+            asoft = ASoftware(**soft)
+
+            self.software.update({
+                id: asoft
+            })
+            
+        for obj in self.collections['tool']:
+
+            if 'revoked' in obj and obj['revoked']: continue
+            if 'x-mitre-deprecated' in obj and obj['x-mitre-deprecated']: continue
+            
+            id = Attack.get_id(obj['external_references'])
+            
+            soft = {
+                    'name': obj['name'],
+                    'id': id,
+                    'ref': obj['id'],
+                    'description': obj['description'],
+                    'aliases': obj.get('x_mitre_aliases', []),
+                    'platforms': obj.get('x_mitre_platforms', [])
+                }
+
+            asoft = ASoftware(**soft)
+
+            self.software.update({
+                id: asoft
+            })
+            
+    def parse_data_sources(self):
+        self.data_sources = {}
+        for obj in self.collections['x-mitre-data-source']:
+
+            if 'revoked' in obj and obj['revoked']: continue
+            if 'x-mitre-deprecated' in obj and obj['x-mitre-deprecated']: continue
+            
+            id = Attack.get_id(obj['external_references'])
+                        
+            ds = {
+                    'name': obj['name'],
+                    'id': id,
+                    'ref': obj['id'],
+                    'description': obj['description'],
+                    'collection_layers': obj.get('x_mitre_collection_layers', []),
+                    'platforms': obj.get('x_mitre_platforms', [])
+                }
+
+            ads = ADatasource(**ds)
+
+            self.data_sources.update({
+                id: ads
+            })
