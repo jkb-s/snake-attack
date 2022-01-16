@@ -1,3 +1,19 @@
 {
-    "attack_data": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json"
+    "attack_data": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json",
+    "tactics_order": [
+         "reconnaissance",
+         "resource-development",
+         "initial-access",
+         "execution",
+         "persistence",
+         "privilege-escalation",  
+         "defense-evasion",
+         "credential-access", 
+         "discovery",  
+         "lateral-movement",   
+         "collection",   
+         "command-and-control", 
+         "exfiltration",  
+         "impact"
+        ]
 }
