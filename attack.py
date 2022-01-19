@@ -76,13 +76,17 @@ class Attack:
                 return ref['external_id']
         return None
 
-    def __init__(self):
+    def __init__(self, version=None):
         self.load_config()                         # creates self.cfg
-        self.download_attack(self.cfg.attack_data) # creates self.attack
+        if not version:
+            self.download_attack(self.cfg.attack_data) # creates self.attack
+        else:
+            self.download_attack(self.cfg.attack_data_versions[version])
         self.collect_objects()                     # creates self.collections
         self.parse_techniques()
         self.parse_groups()
         self.parse_relations()
+        self.fix_relations()
         self.parse_software()
         self.parse_data_sources()
         self.parse_data_components()
@@ -217,6 +221,24 @@ class Attack:
             self.relations.append(
                 ARelation(**data)
             )
+            
+    def fix_relations(self):
+        fixed = []
+        revoked = {}
+        for rel in self.relations:
+            if 'revoked-by' == rel.type:
+                revoked.update({
+                    rel.src: rel.trg
+                })
+    
+        for rel in self.relations:
+            if rel.type != 'revoked-by' and rel.trg in revoked:
+                rel.trg = revoked[rel.trg]
+                fixed.append(rel)
+            else:
+                fixed.append(rel)
+        self.relations = fixed
+        
             
     def parse_software(self):
         self.software = {}
@@ -434,3 +456,95 @@ class Attack:
             for dc in self.techniques_by_data_component:
                 if tech in self.techniques_by_data_component[dc]:
                     self.data_components_by_technique[tech].add(dc)
+                    
+class OldAttack:
+    
+    @staticmethod
+    def get_id(references):
+        for ref in references:
+            if ref['source_name'] == 'mitre-attack':
+                return ref['external_id']
+        return None
+
+    def __init__(self, version=None):
+        self.load_config()                         # creates self.cfg
+        if not version:
+            self.download_attack(self.cfg.attack_data) # creates self.attack
+        else:
+            self.download_attack(self.cfg.attack_data_versions[version])
+        self.collect_objects()                     # creates self.collections
+        self.parse_techniques()
+
+
+    def load_config(self, filename='config.json'):
+        with open(filename, 'r') as file:
+            data = SimpleNamespace(**loads(file.read()))
+            file.close()
+        self.cfg = data
+
+    def download_attack(self, url):
+        response = get(url)
+        if response.ok:
+            self.attack = response.json()
+
+    def collect_objects(self):
+        self.collections = {}
+        for obj in self.attack['objects']:
+            tp = obj['type']
+            if tp in self.collections:
+                self.collections[tp].append(obj)
+            else:
+                self.collections.update({
+                    tp: [obj]
+                })
+
+    def parse_techniques(self):
+        self.techniques = {}
+        self.techniques_list = []
+        for obj in self.collections['attack-pattern']:
+
+            if 'revoked' in obj and obj['revoked']: continue
+            if 'x-mitre-deprecated' in obj and obj['x-mitre-deprecated']: continue
+
+            id = Attack.get_id(obj['external_references'])
+
+            tactics = []
+            for tac in obj['kill_chain_phases']:
+                if tac['kill_chain_name'] == 'mitre-attack':
+                    tactics.append(
+                        tac['phase_name']
+                    )
+
+            defense = []
+            if 'x_mitre_defense_bypassed' in obj and obj['x_mitre_defense_bypassed']:
+                defense = obj['x_mitre_defense_bypassed']
+
+            permissions = []
+            if 'x_mitre_permissions_required' in obj and obj['x_mitre_permissions_required']:
+                permissions = obj['x_mitre_permissions_required']
+
+            data_sources = []
+            if 'x_mitre_data_sources' in obj and obj['x_mitre_data_sources']:
+                data_sources = obj['x_mitre_data_sources']
+                
+            tech = {
+                'name': obj['name'],
+                'platforms': obj['x_mitre_platforms'],
+                'permissions_required': permissions,
+                'defenses_bypassed': defense,
+                'description': obj['description'],
+                #'detection': obj['x_mitre_detection'],
+                'data_sources': data_sources,
+                'tactics': tactics,
+                'id': id,
+                'ref': obj['id']
+            }
+
+            atech = ATechnique(**tech)
+            self.techniques.update({
+                id: atech
+            })
+            self.techniques_list.append(atech)
+            
+
+    
