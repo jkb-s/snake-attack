@@ -1,7 +1,7 @@
 
 
-1. [Malware and Tool - techniques](#malware-and-tools-techniques)
-2. [Groups / Threat Actors - techniques](#threat-actors-techniques)
+1. [Malware and Tool - techniques](#malware-and-tools---techniques)
+2. [Groups / Threat Actors - techniques](#threat-actors---techniques)
 
 
 ## Malware and Tools - techniques
