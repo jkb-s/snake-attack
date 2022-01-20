@@ -1,0 +1,80 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1900px;
+            height: 1050px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "DarkVishnya", "level": 0, "mass": 30, "physics": true, "shape": "dot", "title": ["DarkVishnya"]}, {"color": "#fff5f0", "font": {"color": "#111"}, "id": "resource-development", "label": "Resource Development", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 300.0, "y": -7.347880794884119e-14}, {"color": "#fee2d5", "font": {"color": "#111"}, "id": "initial-access", "label": "Initial Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 229.81333293569332, "y": -192.83628290596187}, {"color": "#fcc3ac", "font": {"color": "#111"}, "id": "execution", "label": "Execution", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 52.09445330007899, "y": -295.44232590366244}, {"color": "#fc9f81", "font": {"color": "#111"}, "id": "persistence", "label": "Persistence", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -150.00000000000014, "y": -259.8076211353315}, {"color": "#fb7c5c", "font": {"color": "#111"}, "id": "privilege-escalation", "label": "Privilege Escalation", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -281.9077862357725, "y": -102.6060429977006}, {"color": "#f5543c", "font": {"color": "#111"}, "id": "credential-access", "label": "Credential Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -281.9077862357725, "y": 102.60604299770067}, {"color": "#e32f27", "font": {"color": "#111"}, "id": "discovery", "label": "Discovery", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -149.99999999999994, "y": 259.8076211353316}, {"color": "#c1151b", "font": {"color": "#111"}, "id": "command-and-control", "label": "Command And Control", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 52.094453300079124, "y": 295.4423259036624}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1046", "label": "Network Service Scanning", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1046"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1200", "label": "Hardware Additions", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1200"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1219", "label": "Remote Access Software", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1219"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1571", "label": "Non-Standard Port", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1571"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1135", "label": "Network Share Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1135"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1543", "label": "Create or Modify System Process", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1543"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1543.003", "label": "Windows Service", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1543.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1588", "label": "Obtain Capabilities", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1588"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1588.002", "label": "Tool", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1588.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1040", "label": "Network Sniffing", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1040"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1059", "label": "Command and Scripting Interpreter", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1059"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.001", "label": "PowerShell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1110", "label": "Brute Force", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1110"}]);
+        edges = new vis.DataSet([{"from": "resource-development", "to": "attack"}, {"from": "initial-access", "to": "resource-development"}, {"from": "execution", "to": "initial-access"}, {"from": "persistence", "to": "execution"}, {"from": "privilege-escalation", "to": "persistence"}, {"from": "credential-access", "to": "privilege-escalation"}, {"from": "discovery", "to": "credential-access"}, {"from": "command-and-control", "to": "discovery"}, {"from": "discovery", "to": "T1046"}, {"from": "initial-access", "to": "T1200"}, {"from": "command-and-control", "to": "T1219"}, {"from": "command-and-control", "to": "T1571"}, {"from": "discovery", "to": "T1135"}, {"from": "persistence", "to": "T1543"}, {"from": "privilege-escalation", "to": "T1543"}, {"from": "T1543", "to": "T1543.003"}, {"from": "resource-development", "to": "T1588"}, {"from": "T1588", "to": "T1588.002"}, {"from": "credential-access", "to": "T1040"}, {"from": "discovery", "to": "T1040"}, {"from": "execution", "to": "T1059"}, {"from": "T1059", "to": "T1059.001"}, {"from": "credential-access", "to": "T1110"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {"nodes": {"font": {"size": 15}, "shadow": {"enabled": true, "color": "rgba(0,0,0,0.7)", "size": 4, "x": 4, "y": 4}}, "edges": {"color": {"inherit": true}, "font": {"size": 44}, "smooth": {"type": "continuous", "forceDirection": "none"}}, "physics": {"barnesHut": {"gravitationalConstant": -300, "centralGravity": 0, "damping": 0.37}, "minVelocity": 0.75}};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1900px;
+            height: 1050px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "Darkhotel", "level": 0, "mass": 30, "physics": true, "shape": "dot", "title": ["Darkhotel", "DUBNIUM"]}, {"color": "#fff5f0", "font": {"color": "#111"}, "id": "initial-access", "label": "Initial Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 300.0, "y": -7.347880794884119e-14}, {"color": "#fee5da", "font": {"color": "#111"}, "id": "execution", "label": "Execution", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 252.37605984935436, "y": -162.19224523667924}, {"color": "#fdcfbc", "font": {"color": "#111"}, "id": "persistence", "label": "Persistence", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 124.62450390056581, "y": -272.88959860635555}, {"color": "#fcb499", "font": {"color": "#111"}, "id": "privilege-escalation", "label": "Privilege Escalation", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -42.69445148198557, "y": -296.9464325642798}, {"color": "#fc9575", "font": {"color": "#111"}, "id": "defense-evasion", "label": "Defense Evasion", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -196.45822018358555, "y": -226.72487230627746}, {"color": "#fb7858", "font": {"color": "#111"}, "id": "credential-access", "label": "Credential Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -287.84789208434927, "y": -84.51976705242882}, {"color": "#f6593f", "font": {"color": "#111"}, "id": "discovery", "label": "Discovery", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -287.8478920843492, "y": 84.5197670524289}, {"color": "#ec382a", "font": {"color": "#111"}, "id": "lateral-movement", "label": "Lateral Movement", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -196.4582201835855, "y": 226.7248723062775}, {"color": "#d01d1f", "font": {"color": "#111"}, "id": "collection", "label": "Collection", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -42.6944514819855, "y": 296.94643256427986}, {"color": "#b51218", "font": {"color": "#111"}, "id": "command-and-control", "label": "Command And Control", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 124.62450390056593, "y": 272.8895986063555}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1553", "label": "Subvert Trust Controls", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1553"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1553.002", "label": "Code Signing", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1553.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1497", "label": "Virtualization/Sandbox Evasion", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1497"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1189", "label": "Drive-by Compromise", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1189"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1566", "label": "Phishing", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1566"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1566.001", "label": "Spearphishing Attachment", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1566.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1203", "label": "Exploitation for Client Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1203"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1497.001", "label": "System Checks", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1497.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1547", "label": "Boot or Logon Autostart Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1547"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1547.009", "label": "Shortcut Modification", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1547.009"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1082", "label": "System Information Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1082"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1518", "label": "Software Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1518"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1518.001", "label": "Security Software Discovery", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1518.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1027", "label": "Obfuscated Files or Information", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1027"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1497.002", "label": "User Activity Based Checks", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1497.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1140", "label": "Deobfuscate/Decode Files or Information", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1140"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1204", "label": "User Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1204"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1204.002", "label": "Malicious File", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1204.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1105", "label": "Ingress Tool Transfer", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1105"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1124", "label": "System Time Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1124"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1547.001", "label": "Registry Run Keys / Startup Folder", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1547.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1083", "label": "File and Directory Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1083"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1016", "label": "System Network Configuration Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1016"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1080", "label": "Taint Shared Content", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1080"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1573", "label": "Encrypted Channel", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1573"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1573.001", "label": "Symmetric Cryptography", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1573.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1036", "label": "Masquerading", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1036"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1036.005", "label": "Match Legitimate Name or Location", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1036.005"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1059", "label": "Command and Scripting Interpreter", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1059"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.003", "label": "Windows Command Shell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1056", "label": "Input Capture", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1056"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1056.001", "label": "Keylogging", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1056.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1091", "label": "Replication Through Removable Media", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1091"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1057", "label": "Process Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1057"}]);
+        edges = new vis.DataSet([{"from": "initial-access", "to": "attack"}, {"from": "execution", "to": "initial-access"}, {"from": "persistence", "to": "execution"}, {"from": "privilege-escalation", "to": "persistence"}, {"from": "defense-evasion", "to": "privilege-escalation"}, {"from": "credential-access", "to": "defense-evasion"}, {"from": "discovery", "to": "credential-access"}, {"from": "lateral-movement", "to": "discovery"}, {"from": "collection", "to": "lateral-movement"}, {"from": "command-and-control", "to": "collection"}, {"from": "defense-evasion", "to": "T1553"}, {"from": "T1553", "to": "T1553.002"}, {"from": "defense-evasion", "to": "T1497"}, {"from": "discovery", "to": "T1497"}, {"from": "initial-access", "to": "T1189"}, {"from": "initial-access", "to": "T1566"}, {"from": "T1566", "to": "T1566.001"}, {"from": "execution", "to": "T1203"}, {"from": "T1497", "to": "T1497.001"}, {"from": "persistence", "to": "T1547"}, {"from": "privilege-escalation", "to": "T1547"}, {"from": "T1547", "to": "T1547.009"}, {"from": "discovery", "to": "T1082"}, {"from": "discovery", "to": "T1518"}, {"from": "T1518", "to": "T1518.001"}, {"from": "defense-evasion", "to": "T1027"}, {"from": "T1497", "to": "T1497.002"}, {"from": "defense-evasion", "to": "T1140"}, {"from": "execution", "to": "T1204"}, {"from": "T1204", "to": "T1204.002"}, {"from": "command-and-control", "to": "T1105"}, {"from": "discovery", "to": "T1124"}, {"from": "T1547", "to": "T1547.001"}, {"from": "discovery", "to": "T1083"}, {"from": "discovery", "to": "T1016"}, {"from": "lateral-movement", "to": "T1080"}, {"from": "command-and-control", "to": "T1573"}, {"from": "T1573", "to": "T1573.001"}, {"from": "defense-evasion", "to": "T1036"}, {"from": "T1036", "to": "T1036.005"}, {"from": "execution", "to": "T1059"}, {"from": "T1059", "to": "T1059.003"}, {"from": "collection", "to": "T1056"}, {"from": "credential-access", "to": "T1056"}, {"from": "T1056", "to": "T1056.001"}, {"from": "lateral-movement", "to": "T1091"}, {"from": "initial-access", "to": "T1091"}, {"from": "discovery", "to": "T1057"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {"nodes": {"font": {"size": 15}, "shadow": {"enabled": true, "color": "rgba(0,0,0,0.7)", "size": 4, "x": 4, "y": 4}}, "edges": {"color": {"inherit": true}, "font": {"size": 44}, "smooth": {"type": "continuous", "forceDirection": "none"}}, "physics": {"barnesHut": {"gravitationalConstant": -300, "centralGravity": 0, "damping": 0.37}, "minVelocity": 0.75}};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

@@ -1,6 +1,10 @@
 
-1. Malware and Tool - techniques used
 
+1. [Malware and Tool - techniques](#malware-and-tools-techniques)
+2. [Groups / Threat Actors - techniques](#threat-actors-techniques)
+
+
+## Malware and Tools - techniques
 - [S0001 Trojan.Mebromi](./malware and tools - techniques graphs/S0001-Trojan.Mebromi.html)
 - [S0002 Mimikatz](./malware and tools - techniques graphs/S0002-Mimikatz.html)
 - [S0003 RIPTIDE](./malware and tools - techniques graphs/S0003-RIPTIDE.html)
@@ -546,3 +550,5 @@
 - [S0654 ProLock](./malware and tools - techniques graphs/S0654-ProLock.html)
 - [S0657 BLUELIGHT](./malware and tools - techniques graphs/S0657-BLUELIGHT.html)
 - [S0658 XCSSET](./malware and tools - techniques graphs/S0658-XCSSET.html)
+
+## Threat Actors - techniques

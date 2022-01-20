@@ -1,0 +1,80 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1900px;
+            height: 1050px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "PROMETHIUM", "level": 0, "mass": 30, "physics": true, "shape": "dot", "title": ["PROMETHIUM", "StrongPity"]}, {"color": "#fff5f0", "font": {"color": "#111"}, "id": "resource-development", "label": "Resource Development", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 300.0, "y": -7.347880794884119e-14}, {"color": "#fddfd1", "font": {"color": "#111"}, "id": "initial-access", "label": "Initial Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 212.1320343559642, "y": -212.1320343559643}, {"color": "#fcbaa0", "font": {"color": "#111"}, "id": "execution", "label": "Execution", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -5.510910596163089e-14, "y": -300.0}, {"color": "#fb9171", "font": {"color": "#111"}, "id": "persistence", "label": "Persistence", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -212.1320343559643, "y": -212.13203435596424}, {"color": "#fa6949", "font": {"color": "#111"}, "id": "privilege-escalation", "label": "Privilege Escalation", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -300.0, "y": 3.6739403974420595e-14}, {"color": "#ee3a2b", "font": {"color": "#111"}, "id": "defense-evasion", "label": "Defense Evasion", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -212.13203435596424, "y": 212.13203435596427}, {"color": "#ca171c", "font": {"color": "#111"}, "id": "command-and-control", "label": "Command And Control", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 1.8369701987210297e-14, "y": 300.0}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1189", "label": "Drive-by Compromise", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1189"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1205", "label": "Traffic Signaling", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1205"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1205.001", "label": "Port Knocking", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1205.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1553", "label": "Subvert Trust Controls", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1553"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1553.002", "label": "Code Signing", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1553.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1078", "label": "Valid Accounts", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1078"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1078.003", "label": "Local Accounts", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1078.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1587", "label": "Develop Capabilities", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1587"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1587.003", "label": "Digital Certificates", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1587.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1036", "label": "Masquerading", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1036"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1036.004", "label": "Masquerade Task or Service", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1036.004"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1204", "label": "User Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1204"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1204.002", "label": "Malicious File", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1204.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1036.005", "label": "Match Legitimate Name or Location", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1036.005"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1587.002", "label": "Code Signing Certificates", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1587.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1543", "label": "Create or Modify System Process", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1543"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1543.003", "label": "Windows Service", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1543.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1547", "label": "Boot or Logon Autostart Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1547"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1547.001", "label": "Registry Run Keys / Startup Folder", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1547.001"}]);
+        edges = new vis.DataSet([{"from": "resource-development", "to": "attack"}, {"from": "initial-access", "to": "resource-development"}, {"from": "execution", "to": "initial-access"}, {"from": "persistence", "to": "execution"}, {"from": "privilege-escalation", "to": "persistence"}, {"from": "defense-evasion", "to": "privilege-escalation"}, {"from": "command-and-control", "to": "defense-evasion"}, {"from": "initial-access", "to": "T1189"}, {"from": "defense-evasion", "to": "T1205"}, {"from": "persistence", "to": "T1205"}, {"from": "command-and-control", "to": "T1205"}, {"from": "T1205", "to": "T1205.001"}, {"from": "defense-evasion", "to": "T1553"}, {"from": "T1553", "to": "T1553.002"}, {"from": "defense-evasion", "to": "T1078"}, {"from": "persistence", "to": "T1078"}, {"from": "privilege-escalation", "to": "T1078"}, {"from": "initial-access", "to": "T1078"}, {"from": "T1078", "to": "T1078.003"}, {"from": "resource-development", "to": "T1587"}, {"from": "T1587", "to": "T1587.003"}, {"from": "defense-evasion", "to": "T1036"}, {"from": "T1036", "to": "T1036.004"}, {"from": "execution", "to": "T1204"}, {"from": "T1204", "to": "T1204.002"}, {"from": "T1036", "to": "T1036.005"}, {"from": "T1587", "to": "T1587.002"}, {"from": "persistence", "to": "T1543"}, {"from": "privilege-escalation", "to": "T1543"}, {"from": "T1543", "to": "T1543.003"}, {"from": "persistence", "to": "T1547"}, {"from": "privilege-escalation", "to": "T1547"}, {"from": "T1547", "to": "T1547.001"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {"nodes": {"font": {"size": 15}, "shadow": {"enabled": true, "color": "rgba(0,0,0,0.7)", "size": 4, "x": 4, "y": 4}}, "edges": {"color": {"inherit": true}, "font": {"size": 44}, "smooth": {"type": "continuous", "forceDirection": "none"}}, "physics": {"barnesHut": {"gravitationalConstant": -300, "centralGravity": 0, "damping": 0.37}, "minVelocity": 0.75}};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1900px;
+            height: 1050px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "ZIRCONIUM", "level": 0, "mass": 30, "physics": true, "shape": "dot", "title": ["ZIRCONIUM", "APT31"]}, {"color": "#fff5f0", "font": {"color": "#111"}, "id": "reconnaissance", "label": "Reconnaissance", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 300.0, "y": -7.347880794884119e-14}, {"color": "#fee7dc", "font": {"color": "#111"}, "id": "resource-development", "label": "Resource Development", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 259.8076211353315, "y": -150.00000000000014}, {"color": "#fdd4c2", "font": {"color": "#111"}, "id": "initial-access", "label": "Initial Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 149.9999999999998, "y": -259.8076211353317}, {"color": "#fcbaa0", "font": {"color": "#111"}, "id": "execution", "label": "Execution", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -5.510910596163089e-14, "y": -300.0}, {"color": "#fc9f81", "font": {"color": "#111"}, "id": "persistence", "label": "Persistence", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -150.00000000000014, "y": -259.8076211353315}, {"color": "#fb8464", "font": {"color": "#111"}, "id": "privilege-escalation", "label": "Privilege Escalation", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -259.80762113533166, "y": -149.99999999999991}, {"color": "#fa6949", "font": {"color": "#111"}, "id": "defense-evasion", "label": "Defense Evasion", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -300.0, "y": 3.6739403974420595e-14}, {"color": "#f24a35", "font": {"color": "#111"}, "id": "credential-access", "label": "Credential Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -259.80762113533154, "y": 150.0000000000001}, {"color": "#e32f27", "font": {"color": "#111"}, "id": "discovery", "label": "Discovery", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -149.99999999999994, "y": 259.8076211353316}, {"color": "#ca171c", "font": {"color": "#111"}, "id": "command-and-control", "label": "Command And Control", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 1.8369701987210297e-14, "y": 300.0}, {"color": "#b11117", "font": {"color": "#111"}, "id": "exfiltration", "label": "Exfiltration", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 150.00000000000003, "y": 259.8076211353316}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1583", "label": "Acquire Infrastructure", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1583"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1583.001", "label": "Domains", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1583.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1218", "label": "Signed Binary Proxy Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1218"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1218.007", "label": "Msiexec", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1218.007"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1027", "label": "Obfuscated Files or Information", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1027"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1027.002", "label": "Software Packing", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1027.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1566", "label": "Phishing", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1566"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1566.002", "label": "Spearphishing Link", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1566.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1041", "label": "Exfiltration Over C2 Channel", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1041"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1068", "label": "Exploitation for Privilege Escalation", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1068"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1082", "label": "System Information Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1082"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1555", "label": "Credentials from Password Stores", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1555"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1555.003", "label": "Credentials from Web Browsers", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1555.003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1140", "label": "Deobfuscate/Decode Files or Information", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1140"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1059", "label": "Command and Scripting Interpreter", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1059"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.006", "label": "Python", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.006"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1105", "label": "Ingress Tool Transfer", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1105"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1124", "label": "System Time Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1124"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1547", "label": "Boot or Logon Autostart Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1547"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1547.001", "label": "Registry Run Keys / Startup Folder", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1547.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1204", "label": "User Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1204"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1204.001", "label": "Malicious Link", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1204.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1016", "label": "System Network Configuration Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1016"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1033", "label": "System Owner/User Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1033"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1012", "label": "Query Registry", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1012"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1598", "label": "Phishing for Information", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1598"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1102", "label": "Web Service", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1102"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1102.002", "label": "Bidirectional Communication", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1102.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1583.006", "label": "Web Services", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1583.006"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1573", "label": "Encrypted Channel", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1573"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1573.001", "label": "Symmetric Cryptography", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1573.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1036", "label": "Masquerading", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1036"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1567", "label": "Exfiltration Over Web Service", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1567"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1567.002", "label": "Exfiltration to Cloud Storage", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1567.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.003", "label": "Windows Command Shell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1036.004", "label": "Masquerade Task or Service", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1036.004"}]);
+        edges = new vis.DataSet([{"from": "reconnaissance", "to": "attack"}, {"from": "resource-development", "to": "reconnaissance"}, {"from": "initial-access", "to": "resource-development"}, {"from": "execution", "to": "initial-access"}, {"from": "persistence", "to": "execution"}, {"from": "privilege-escalation", "to": "persistence"}, {"from": "defense-evasion", "to": "privilege-escalation"}, {"from": "credential-access", "to": "defense-evasion"}, {"from": "discovery", "to": "credential-access"}, {"from": "command-and-control", "to": "discovery"}, {"from": "exfiltration", "to": "command-and-control"}, {"from": "resource-development", "to": "T1583"}, {"from": "T1583", "to": "T1583.001"}, {"from": "defense-evasion", "to": "T1218"}, {"from": "T1218", "to": "T1218.007"}, {"from": "defense-evasion", "to": "T1027"}, {"from": "T1027", "to": "T1027.002"}, {"from": "initial-access", "to": "T1566"}, {"from": "T1566", "to": "T1566.002"}, {"from": "exfiltration", "to": "T1041"}, {"from": "privilege-escalation", "to": "T1068"}, {"from": "discovery", "to": "T1082"}, {"from": "credential-access", "to": "T1555"}, {"from": "T1555", "to": "T1555.003"}, {"from": "defense-evasion", "to": "T1140"}, {"from": "execution", "to": "T1059"}, {"from": "T1059", "to": "T1059.006"}, {"from": "command-and-control", "to": "T1105"}, {"from": "discovery", "to": "T1124"}, {"from": "persistence", "to": "T1547"}, {"from": "privilege-escalation", "to": "T1547"}, {"from": "T1547", "to": "T1547.001"}, {"from": "execution", "to": "T1204"}, {"from": "T1204", "to": "T1204.001"}, {"from": "discovery", "to": "T1016"}, {"from": "discovery", "to": "T1033"}, {"from": "discovery", "to": "T1012"}, {"from": "reconnaissance", "to": "T1598"}, {"from": "command-and-control", "to": "T1102"}, {"from": "T1102", "to": "T1102.002"}, {"from": "T1583", "to": "T1583.006"}, {"from": "command-and-control", "to": "T1573"}, {"from": "T1573", "to": "T1573.001"}, {"from": "defense-evasion", "to": "T1036"}, {"from": "exfiltration", "to": "T1567"}, {"from": "T1567", "to": "T1567.002"}, {"from": "T1059", "to": "T1059.003"}, {"from": "T1036", "to": "T1036.004"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {"nodes": {"font": {"size": 15}, "shadow": {"enabled": true, "color": "rgba(0,0,0,0.7)", "size": 4, "x": 4, "y": 4}}, "edges": {"color": {"inherit": true}, "font": {"size": 44}, "smooth": {"type": "continuous", "forceDirection": "none"}}, "physics": {"barnesHut": {"gravitationalConstant": -300, "centralGravity": 0, "damping": 0.37}, "minVelocity": 0.75}};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

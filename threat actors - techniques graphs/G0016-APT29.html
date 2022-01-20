@@ -1,0 +1,176 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1900px;
+            height: 1050px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 1900px;
+            height: 1050px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "APT29", "level": 0, "mass": 30, "physics": true, "shape": "dot", "title": ["APT29", "NobleBaron", "Dark Halo", "StellarParticle", "NOBELIUM", "UNC2452", "YTTRIUM", "The Dukes", "Cozy Bear", "CozyDuke"]}, {"color": "#fff5f0", "font": {"color": "#111"}, "id": "reconnaissance", "label": "Reconnaissance", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 300.0, "y": -7.347880794884119e-14}, {"color": "#fee9df", "font": {"color": "#111"}, "id": "resource-development", "label": "Resource Development", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 270.29066037072573, "y": -130.1651217352675}, {"color": "#fddbcb", "font": {"color": "#111"}, "id": "initial-access", "label": "Initial Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 187.04694055762002, "y": -234.54944474040897}, {"color": "#fcc6af", "font": {"color": "#111"}, "id": "execution", "label": "Execution", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 66.75628018689427, "y": -292.4783736545471}, {"color": "#fcaf93", "font": {"color": "#111"}, "id": "persistence", "label": "Persistence", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -66.75628018689437, "y": -292.4783736545471}, {"color": "#fc9778", "font": {"color": "#111"}, "id": "privilege-escalation", "label": "Privilege Escalation", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -187.0469405576201, "y": -234.54944474040892}, {"color": "#fb8161", "font": {"color": "#111"}, "id": "defense-evasion", "label": "Defense Evasion", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -270.29066037072573, "y": -130.1651217352674}, {"color": "#fa6949", "font": {"color": "#111"}, "id": "credential-access", "label": "Credential Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -300.0, "y": 3.6739403974420595e-14}, {"color": "#f44e38", "font": {"color": "#111"}, "id": "discovery", "label": "Discovery", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -270.29066037072573, "y": 130.16512173526746}, {"color": "#e93529", "font": {"color": "#111"}, "id": "lateral-movement", "label": "Lateral Movement", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -187.04694055762005, "y": 234.54944474040897}, {"color": "#d52221", "font": {"color": "#111"}, "id": "collection", "label": "Collection", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -66.7562801868943, "y": 292.4783736545471}, {"color": "#bf151a", "font": {"color": "#111"}, "id": "command-and-control", "label": "Command And Control", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 66.75628018689433, "y": 292.4783736545471}, {"color": "#a91016", "font": {"color": "#111"}, "id": "exfiltration", "label": "Exfiltration", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 187.04694055762008, "y": 234.54944474040894}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1053", "label": "Scheduled Task/Job", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1053"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1053.005", "label": "Scheduled Task", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1053.005"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1078", "label": "Valid Accounts", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1078"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1098", "label": "Account Manipulation", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1098"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1098.002", "label": "Exchange Email Delegate Permissions", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1098.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1059", "label": "Command and Scripting Interpreter", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1059"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.001", "label": "PowerShell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1568", "label": "Dynamic Resolution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1568"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1588", "label": "Obtain Capabilities", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1588"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1588.002", "label": "Tool", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1588.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1548", "label": "Abuse Elevation Control Mechanism", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1548"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1548.002", "label": "Bypass User Account Control", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1548.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1069", "label": "Permission Groups Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1069"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1587", "label": "Develop Capabilities", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1587"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1587.001", "label": "Malware", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1587.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1070", "label": "Indicator Removal on Host", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1070"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1070.004", "label": "File Deletion", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1070.004"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1550", "label": "Use Alternate Authentication Material", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1550"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1562", "label": "Impair Defenses", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1562"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1562.004", "label": "Disable or Modify System Firewall", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1562.004"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1114", "label": "Email Collection", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1114"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1114.002", "label": "Remote Email Collection", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1114.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1566", "label": "Phishing", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1566"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1566.002", "label": "Spearphishing Link", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1566.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1558", "label": "Steal or Forge Kerberos Tickets", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1558"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1558.003", "label": "Kerberoasting", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1558.003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1133", "label": "External Remote Services", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1133"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1082", "label": "System Information Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1082"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1190", "label": "Exploit Public-Facing Application", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1190"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1140", "label": "Deobfuscate/Decode Files or Information", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1140"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1110", "label": "Brute Force", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1110"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1110.003", "label": "Password Spraying", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1110.003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1018", "label": "Remote System Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1018"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.005", "label": "Visual Basic", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.005"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1071", "label": "Application Layer Protocol", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1071"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1071.001", "label": "Web Protocols", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1071.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1583", "label": "Acquire Infrastructure", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1583"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1583.006", "label": "Web Services", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1583.006"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1098.001", "label": "Additional Cloud Credentials", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1098.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1505", "label": "Server Software Component", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1505"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1505.003", "label": "Web Shell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1505.003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.003", "label": "Windows Command Shell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1036", "label": "Masquerading", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1036"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1036.004", "label": "Masquerade Task or Service", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1036.004"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1584", "label": "Compromise Infrastructure", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1584"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1584.001", "label": "Domains", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1584.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1606", "label": "Forge Web Credentials", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1606"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1606.001", "label": "Web Cookies", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1606.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1552", "label": "Unsecured Credentials", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1552"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1552.004", "label": "Private Keys", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1552.004"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1583.001", "label": "Domains", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1583.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1546", "label": "Event Triggered Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1546"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1546.003", "label": "Windows Management Instrumentation Event Subscription", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1546.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1090", "label": "Proxy", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1090"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1090.004", "label": "Domain Fronting", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1090.004"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1003", "label": "OS Credential Dumping", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1003.006", "label": "DCSync", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1003.006"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1566.003", "label": "Spearphishing via Service", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1566.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1547", "label": "Boot or Logon Autostart Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1547"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1547.009", "label": "Shortcut Modification", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1547.009"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1555", "label": "Credentials from Password Stores", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1555"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.006", "label": "Python", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.006"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1546.008", "label": "Accessibility Features", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1546.008"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1105", "label": "Ingress Tool Transfer", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1105"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1027", "label": "Obfuscated Files or Information", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1027"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1027.001", "label": "Binary Padding", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1027.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1547.001", "label": "Registry Run Keys / Startup Folder", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1547.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1090.003", "label": "Multi-hop Proxy", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1090.003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1043", "label": "Commonly Used Port", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1043"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1560", "label": "Archive Collected Data", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1560"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1560.001", "label": "Archive via Utility", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1560.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1562.001", "label": "Disable or Modify Tools", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1562.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1550.003", "label": "Pass the Ticket", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1550.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1553", "label": "Subvert Trust Controls", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1553"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1553.002", "label": "Code Signing", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1553.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1482", "label": "Domain Trust Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1482"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1090.001", "label": "Internal Proxy", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1090.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1195", "label": "Supply Chain Compromise", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1195"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1195.002", "label": "Compromise Software Supply Chain", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1195.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1047", "label": "Windows Management Instrumentation", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1047"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1566.001", "label": "Spearphishing Attachment", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1566.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1016", "label": "System Network Configuration Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1016"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1016.001", "label": "Internet Connection Discovery", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1016.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1203", "label": "Exploitation for Client Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1203"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1027.002", "label": "Software Packing", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1027.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1070.006", "label": "Timestomp", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1070.006"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1606.002", "label": "SAML Tokens", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1606.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1587.003", "label": "Digital Certificates", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1587.003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1078.002", "label": "Domain Accounts", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1078.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1213", "label": "Data from Information Repositories", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1213"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1213.003", "label": "Code Repositories", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1213.003"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1204", "label": "User Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1204"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1204.002", "label": "Malicious File", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1204.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1218", "label": "Signed Binary Proxy Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1218"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1218.011", "label": "Rundll32", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1218.011"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1001", "label": "Data Obfuscation", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1001.002", "label": "Steganography", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1001.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1550.004", "label": "Web Session Cookie", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1550.004"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1102", "label": "Web Service", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1102"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1102.002", "label": "Bidirectional Communication", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1102.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1036.005", "label": "Match Legitimate Name or Location", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1036.005"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1057", "label": "Process Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1057"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1005", "label": "Data from Local System", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1005"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1199", "label": "Trusted Relationship", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1199"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1595", "label": "Active Scanning", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1595"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1595.002", "label": "Vulnerability Scanning", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1595.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1048", "label": "Exfiltration Over Alternative Protocol", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1048"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1048.002", "label": "Exfiltration Over Asymmetric Encrypted Non-C2 Protocol", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1048.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1083", "label": "File and Directory Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1083"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1204.001", "label": "Malicious Link", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1204.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1484", "label": "Domain Policy Modification", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1484"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1484.002", "label": "Domain Trust Modification", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1484.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1064", "label": "Scripting", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1064"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1095", "label": "Non-Application Layer Protocol", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1095"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1087", "label": "Account Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1087"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1562.002", "label": "Disable Windows Event Logging", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1562.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1021", "label": "Remote Services", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1021"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1021.006", "label": "Windows Remote Management", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1021.006"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1074", "label": "Data Staged", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1074"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1074.002", "label": "Remote Data Staging", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1074.002"}]);
+        edges = new vis.DataSet([{"from": "reconnaissance", "to": "attack"}, {"from": "resource-development", "to": "reconnaissance"}, {"from": "initial-access", "to": "resource-development"}, {"from": "execution", "to": "initial-access"}, {"from": "persistence", "to": "execution"}, {"from": "privilege-escalation", "to": "persistence"}, {"from": "defense-evasion", "to": "privilege-escalation"}, {"from": "credential-access", "to": "defense-evasion"}, {"from": "discovery", "to": "credential-access"}, {"from": "lateral-movement", "to": "discovery"}, {"from": "collection", "to": "lateral-movement"}, {"from": "command-and-control", "to": "collection"}, {"from": "exfiltration", "to": "command-and-control"}, {"from": "execution", "to": "T1053"}, {"from": "persistence", "to": "T1053"}, {"from": "privilege-escalation", "to": "T1053"}, {"from": "T1053", "to": "T1053.005"}, {"from": "defense-evasion", "to": "T1078"}, {"from": "persistence", "to": "T1078"}, {"from": "privilege-escalation", "to": "T1078"}, {"from": "initial-access", "to": "T1078"}, {"from": "persistence", "to": "T1098"}, {"from": "T1098", "to": "T1098.002"}, {"from": "execution", "to": "T1059"}, {"from": "T1059", "to": "T1059.001"}, {"from": "command-and-control", "to": "T1568"}, {"from": "resource-development", "to": "T1588"}, {"from": "T1588", "to": "T1588.002"}, {"from": "privilege-escalation", "to": "T1548"}, {"from": "defense-evasion", "to": "T1548"}, {"from": "T1548", "to": "T1548.002"}, {"from": "discovery", "to": "T1069"}, {"from": "resource-development", "to": "T1587"}, {"from": "T1587", "to": "T1587.001"}, {"from": "defense-evasion", "to": "T1070"}, {"from": "T1070", "to": "T1070.004"}, {"from": "defense-evasion", "to": "T1550"}, {"from": "lateral-movement", "to": "T1550"}, {"from": "defense-evasion", "to": "T1562"}, {"from": "T1562", "to": "T1562.004"}, {"from": "collection", "to": "T1114"}, {"from": "T1114", "to": "T1114.002"}, {"from": "initial-access", "to": "T1566"}, {"from": "T1566", "to": "T1566.002"}, {"from": "credential-access", "to": "T1558"}, {"from": "T1558", "to": "T1558.003"}, {"from": "persistence", "to": "T1133"}, {"from": "initial-access", "to": "T1133"}, {"from": "discovery", "to": "T1082"}, {"from": "initial-access", "to": "T1190"}, {"from": "defense-evasion", "to": "T1140"}, {"from": "credential-access", "to": "T1110"}, {"from": "T1110", "to": "T1110.003"}, {"from": "discovery", "to": "T1018"}, {"from": "T1059", "to": "T1059.005"}, {"from": "command-and-control", "to": "T1071"}, {"from": "T1071", "to": "T1071.001"}, {"from": "resource-development", "to": "T1583"}, {"from": "T1583", "to": "T1583.006"}, {"from": "T1098", "to": "T1098.001"}, {"from": "persistence", "to": "T1505"}, {"from": "T1505", "to": "T1505.003"}, {"from": "T1059", "to": "T1059.003"}, {"from": "defense-evasion", "to": "T1036"}, {"from": "T1036", "to": "T1036.004"}, {"from": "resource-development", "to": "T1584"}, {"from": "T1584", "to": "T1584.001"}, {"from": "credential-access", "to": "T1606"}, {"from": "T1606", "to": "T1606.001"}, {"from": "credential-access", "to": "T1552"}, {"from": "T1552", "to": "T1552.004"}, {"from": "T1583", "to": "T1583.001"}, {"from": "privilege-escalation", "to": "T1546"}, {"from": "persistence", "to": "T1546"}, {"from": "T1546", "to": "T1546.003"}, {"from": "command-and-control", "to": "T1090"}, {"from": "T1090", "to": "T1090.004"}, {"from": "credential-access", "to": "T1003"}, {"from": "T1003", "to": "T1003.006"}, {"from": "T1566", "to": "T1566.003"}, {"from": "persistence", "to": "T1547"}, {"from": "privilege-escalation", "to": "T1547"}, {"from": "T1547", "to": "T1547.009"}, {"from": "credential-access", "to": "T1555"}, {"from": "T1059", "to": "T1059.006"}, {"from": "T1546", "to": "T1546.008"}, {"from": "command-and-control", "to": "T1105"}, {"from": "defense-evasion", "to": "T1027"}, {"from": "T1027", "to": "T1027.001"}, {"from": "T1547", "to": "T1547.001"}, {"from": "T1090", "to": "T1090.003"}, {"from": "command-and-control", "to": "T1043"}, {"from": "collection", "to": "T1560"}, {"from": "T1560", "to": "T1560.001"}, {"from": "T1562", "to": "T1562.001"}, {"from": "T1550", "to": "T1550.003"}, {"from": "defense-evasion", "to": "T1553"}, {"from": "T1553", "to": "T1553.002"}, {"from": "discovery", "to": "T1482"}, {"from": "T1090", "to": "T1090.001"}, {"from": "initial-access", "to": "T1195"}, {"from": "T1195", "to": "T1195.002"}, {"from": "execution", "to": "T1047"}, {"from": "T1566", "to": "T1566.001"}, {"from": "discovery", "to": "T1016"}, {"from": "T1016", "to": "T1016.001"}, {"from": "execution", "to": "T1203"}, {"from": "T1027", "to": "T1027.002"}, {"from": "T1070", "to": "T1070.006"}, {"from": "T1606", "to": "T1606.002"}, {"from": "T1587", "to": "T1587.003"}, {"from": "T1078", "to": "T1078.002"}, {"from": "collection", "to": "T1213"}, {"from": "T1213", "to": "T1213.003"}, {"from": "execution", "to": "T1204"}, {"from": "T1204", "to": "T1204.002"}, {"from": "defense-evasion", "to": "T1218"}, {"from": "T1218", "to": "T1218.011"}, {"from": "command-and-control", "to": "T1001"}, {"from": "T1001", "to": "T1001.002"}, {"from": "T1550", "to": "T1550.004"}, {"from": "command-and-control", "to": "T1102"}, {"from": "T1102", "to": "T1102.002"}, {"from": "T1036", "to": "T1036.005"}, {"from": "discovery", "to": "T1057"}, {"from": "collection", "to": "T1005"}, {"from": "initial-access", "to": "T1199"}, {"from": "reconnaissance", "to": "T1595"}, {"from": "T1595", "to": "T1595.002"}, {"from": "exfiltration", "to": "T1048"}, {"from": "T1048", "to": "T1048.002"}, {"from": "discovery", "to": "T1083"}, {"from": "T1204", "to": "T1204.001"}, {"from": "defense-evasion", "to": "T1484"}, {"from": "privilege-escalation", "to": "T1484"}, {"from": "T1484", "to": "T1484.002"}, {"from": "defense-evasion", "to": "T1064"}, {"from": "execution", "to": "T1064"}, {"from": "command-and-control", "to": "T1095"}, {"from": "discovery", "to": "T1087"}, {"from": "T1562", "to": "T1562.002"}, {"from": "lateral-movement", "to": "T1021"}, {"from": "T1021", "to": "T1021.006"}, {"from": "collection", "to": "T1074"}, {"from": "T1074", "to": "T1074.002"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {"nodes": {"font": {"size": 15}, "shadow": {"enabled": true, "color": "rgba(0,0,0,0.7)", "size": 4, "x": 4, "y": 4}}, "edges": {"color": {"inherit": true}, "font": {"size": 44}, "smooth": {"type": "continuous", "forceDirection": "none"}}, "physics": {"barnesHut": {"gravitationalConstant": -300, "centralGravity": 0, "damping": 0.37}, "minVelocity": 0.75}};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

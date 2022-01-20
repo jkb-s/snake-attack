@@ -1,0 +1,80 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1900px;
+            height: 1050px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "Volatile Cedar", "level": 0, "mass": 30, "physics": true, "shape": "dot", "title": ["Volatile Cedar", "Lebanese Cedar"]}, {"color": "#fff5f0", "font": {"color": "#111"}, "id": "reconnaissance", "label": "Reconnaissance", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 300.0, "y": -7.347880794884119e-14}, {"color": "#fcc9b4", "font": {"color": "#111"}, "id": "initial-access", "label": "Initial Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 92.70509831248417, "y": -285.3169548885461}, {"color": "#fb8a6a", "font": {"color": "#111"}, "id": "persistence", "label": "Persistence", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -242.70509831248427, "y": -176.3355756877419}, {"color": "#f14432", "font": {"color": "#111"}, "id": "command-and-control", "label": "Command And Control", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -242.7050983124842, "y": 176.33557568774197}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1105", "label": "Ingress Tool Transfer", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1105"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1595", "label": "Active Scanning", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1595"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1595.002", "label": "Vulnerability Scanning", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1595.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1190", "label": "Exploit Public-Facing Application", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1190"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1505", "label": "Server Software Component", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1505"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1505.003", "label": "Web Shell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1505.003"}]);
+        edges = new vis.DataSet([{"from": "reconnaissance", "to": "attack"}, {"from": "initial-access", "to": "reconnaissance"}, {"from": "persistence", "to": "initial-access"}, {"from": "command-and-control", "to": "persistence"}, {"from": "command-and-control", "to": "T1105"}, {"from": "reconnaissance", "to": "T1595"}, {"from": "T1595", "to": "T1595.002"}, {"from": "initial-access", "to": "T1190"}, {"from": "persistence", "to": "T1505"}, {"from": "T1505", "to": "T1505.003"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {"nodes": {"font": {"size": 15}, "shadow": {"enabled": true, "color": "rgba(0,0,0,0.7)", "size": 4, "x": 4, "y": 4}}, "edges": {"color": {"inherit": true}, "font": {"size": 44}, "smooth": {"type": "continuous", "forceDirection": "none"}}, "physics": {"barnesHut": {"gravitationalConstant": -300, "centralGravity": 0, "damping": 0.37}, "minVelocity": 0.75}};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

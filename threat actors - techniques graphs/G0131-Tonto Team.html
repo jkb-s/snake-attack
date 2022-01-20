@@ -1,0 +1,80 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1900px;
+            height: 1050px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "Tonto Team", "level": 0, "mass": 30, "physics": true, "shape": "dot", "title": ["Tonto Team", "Earth Akhlut", "BRONZE HUNTLEY", "CactusPete", "Karma Panda"]}, {"color": "#fff5f0", "font": {"color": "#111"}, "id": "initial-access", "label": "Initial Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 300.0, "y": -7.347880794884119e-14}, {"color": "#fee5da", "font": {"color": "#111"}, "id": "execution", "label": "Execution", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 252.37605984935436, "y": -162.19224523667924}, {"color": "#fdcfbc", "font": {"color": "#111"}, "id": "persistence", "label": "Persistence", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 124.62450390056581, "y": -272.88959860635555}, {"color": "#fcb499", "font": {"color": "#111"}, "id": "privilege-escalation", "label": "Privilege Escalation", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -42.69445148198557, "y": -296.9464325642798}, {"color": "#fc9575", "font": {"color": "#111"}, "id": "defense-evasion", "label": "Defense Evasion", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -196.45822018358555, "y": -226.72487230627746}, {"color": "#fb7858", "font": {"color": "#111"}, "id": "credential-access", "label": "Credential Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -287.84789208434927, "y": -84.51976705242882}, {"color": "#f6593f", "font": {"color": "#111"}, "id": "discovery", "label": "Discovery", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -287.8478920843492, "y": 84.5197670524289}, {"color": "#ec382a", "font": {"color": "#111"}, "id": "lateral-movement", "label": "Lateral Movement", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -196.4582201835855, "y": 226.7248723062775}, {"color": "#d01d1f", "font": {"color": "#111"}, "id": "collection", "label": "Collection", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -42.6944514819855, "y": 296.94643256427986}, {"color": "#b51218", "font": {"color": "#111"}, "id": "command-and-control", "label": "Command And Control", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 124.62450390056593, "y": 272.8895986063555}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1566", "label": "Phishing", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1566"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1566.001", "label": "Spearphishing Attachment", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1566.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1210", "label": "Exploitation of Remote Services", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1210"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1090", "label": "Proxy", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1090"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1090.002", "label": "External Proxy", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1090.002"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1203", "label": "Exploitation for Client Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1203"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1204", "label": "User Execution", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1204"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1204.002", "label": "Malicious File", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1204.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1059", "label": "Command and Scripting Interpreter", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1059"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.006", "label": "Python", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.006"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1105", "label": "Ingress Tool Transfer", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1105"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1574", "label": "Hijack Execution Flow", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1574"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1574.001", "label": "DLL Search Order Hijacking", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1574.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1135", "label": "Network Share Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1135"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1505", "label": "Server Software Component", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1505"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1505.003", "label": "Web Shell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1505.003"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1068", "label": "Exploitation for Privilege Escalation", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1068"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1056", "label": "Input Capture", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1056"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1056.001", "label": "Keylogging", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1056.001"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1069", "label": "Permission Groups Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1069"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1069.001", "label": "Local Groups", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1069.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.001", "label": "PowerShell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1003", "label": "OS Credential Dumping", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1003"}]);
+        edges = new vis.DataSet([{"from": "initial-access", "to": "attack"}, {"from": "execution", "to": "initial-access"}, {"from": "persistence", "to": "execution"}, {"from": "privilege-escalation", "to": "persistence"}, {"from": "defense-evasion", "to": "privilege-escalation"}, {"from": "credential-access", "to": "defense-evasion"}, {"from": "discovery", "to": "credential-access"}, {"from": "lateral-movement", "to": "discovery"}, {"from": "collection", "to": "lateral-movement"}, {"from": "command-and-control", "to": "collection"}, {"from": "initial-access", "to": "T1566"}, {"from": "T1566", "to": "T1566.001"}, {"from": "lateral-movement", "to": "T1210"}, {"from": "command-and-control", "to": "T1090"}, {"from": "T1090", "to": "T1090.002"}, {"from": "execution", "to": "T1203"}, {"from": "execution", "to": "T1204"}, {"from": "T1204", "to": "T1204.002"}, {"from": "execution", "to": "T1059"}, {"from": "T1059", "to": "T1059.006"}, {"from": "command-and-control", "to": "T1105"}, {"from": "persistence", "to": "T1574"}, {"from": "privilege-escalation", "to": "T1574"}, {"from": "defense-evasion", "to": "T1574"}, {"from": "T1574", "to": "T1574.001"}, {"from": "discovery", "to": "T1135"}, {"from": "persistence", "to": "T1505"}, {"from": "T1505", "to": "T1505.003"}, {"from": "privilege-escalation", "to": "T1068"}, {"from": "collection", "to": "T1056"}, {"from": "credential-access", "to": "T1056"}, {"from": "T1056", "to": "T1056.001"}, {"from": "discovery", "to": "T1069"}, {"from": "T1069", "to": "T1069.001"}, {"from": "T1059", "to": "T1059.001"}, {"from": "credential-access", "to": "T1003"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {"nodes": {"font": {"size": 15}, "shadow": {"enabled": true, "color": "rgba(0,0,0,0.7)", "size": 4, "x": 4, "y": 4}}, "edges": {"color": {"inherit": true}, "font": {"size": 44}, "smooth": {"type": "continuous", "forceDirection": "none"}}, "physics": {"barnesHut": {"gravitationalConstant": -300, "centralGravity": 0, "damping": 0.37}, "minVelocity": 0.75}};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

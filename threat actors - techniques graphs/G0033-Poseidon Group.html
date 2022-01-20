@@ -1,0 +1,80 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1900px;
+            height: 1050px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "Poseidon Group", "level": 0, "mass": 30, "physics": true, "shape": "dot", "title": ["Poseidon Group"]}, {"color": "#fff5f0", "font": {"color": "#111"}, "id": "execution", "label": "Execution", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 300.0, "y": -7.347880794884119e-14}, {"color": "#fcc9b4", "font": {"color": "#111"}, "id": "defense-evasion", "label": "Defense Evasion", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": 92.70509831248417, "y": -285.3169548885461}, {"color": "#fb8a6a", "font": {"color": "#111"}, "id": "credential-access", "label": "Credential Access", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -242.70509831248427, "y": -176.3355756877419}, {"color": "#f14432", "font": {"color": "#111"}, "id": "discovery", "label": "Discovery", "level": 1, "mass": 20, "physics": true, "shape": "dot", "x": -242.7050983124842, "y": 176.33557568774197}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1049", "label": "System Network Connections Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1049"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1087", "label": "Account Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1087"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1087.001", "label": "Local Account", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1087.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1087.002", "label": "Domain Account", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1087.002"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1036", "label": "Masquerading", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1036"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1036.005", "label": "Match Legitimate Name or Location", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1036.005"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1007", "label": "System Service Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1007"}, {"color": "#F33", "font": {"color": "#111"}, "id": "T1059", "label": "Command and Scripting Interpreter", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1059"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1059.001", "label": "PowerShell", "level": 3, "mass": 3, "shape": "dot", "size": 5, "title": "T1059.001"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1057", "label": "Process Discovery", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1057"}, {"color": "#F55", "font": {"color": "#111"}, "id": "T1003", "label": "OS Credential Dumping", "level": 2, "mass": 5, "shape": "dot", "size": 10, "title": "T1003"}]);
+        edges = new vis.DataSet([{"from": "execution", "to": "attack"}, {"from": "defense-evasion", "to": "execution"}, {"from": "credential-access", "to": "defense-evasion"}, {"from": "discovery", "to": "credential-access"}, {"from": "discovery", "to": "T1049"}, {"from": "discovery", "to": "T1087"}, {"from": "T1087", "to": "T1087.001"}, {"from": "T1087", "to": "T1087.002"}, {"from": "defense-evasion", "to": "T1036"}, {"from": "T1036", "to": "T1036.005"}, {"from": "discovery", "to": "T1007"}, {"from": "execution", "to": "T1059"}, {"from": "T1059", "to": "T1059.001"}, {"from": "discovery", "to": "T1057"}, {"from": "credential-access", "to": "T1003"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {"nodes": {"font": {"size": 15}, "shadow": {"enabled": true, "color": "rgba(0,0,0,0.7)", "size": 4, "x": 4, "y": 4}}, "edges": {"color": {"inherit": true}, "font": {"size": 44}, "smooth": {"type": "continuous", "forceDirection": "none"}}, "physics": {"barnesHut": {"gravitationalConstant": -300, "centralGravity": 0, "damping": 0.37}, "minVelocity": 0.75}};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
