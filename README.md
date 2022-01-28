@@ -4,7 +4,7 @@
 1. [Malware and Tools - techniques](#malware-and-tools---techniques)
 2. [Groups / Threat Actors - techniques](#threat-actors---techniques))
 3. [All Techniques](./techniques/All techniques.html)
-4. Techniques popularity [graph Top10 per tactic](./techniques/Techniques popularity.html), [excel](./techniques/Techniques popularity.xlsx)
+4. Techniques popularity [graph Top10 per tactic](./techniques/Techniques-popularity.html), [excel](./techniques/Techniques-popularity.xlsx)
 5. All data sources and components [graph](./data sources/All data sources.html)
 6. Data source importance [plot](./data sources/Data source importance.html), [excel](./data sources/Data source importance.xlsx)
 7. Mitigations importance [plot](./mitigations/Mitigations importance.html), [excel](./mitigations/Mitigations importance.xlsx)
