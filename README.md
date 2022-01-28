@@ -3,6 +3,9 @@
 ### Index
 1. [Malware and Tools - techniques](#malware-and-tools---techniques)
 2. [Groups / Threat Actors - techniques](#threat-actors---techniques))
+3. Data sources
+    - [All data sources and components graph](./data sources/All data sources.html)
+    - Data source importance [plot](./data sources/Data source importance.html), [Excel](./data sources/Data source importance.xlsx)
 
 
 ## Malware and Tools - techniques
