@@ -1,0 +1,204 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 1200px;
+            height: 750px;
+            background-color: #FFF;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 1200px;
+            height: 750px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#000", "font": {"color": "#111"}, "id": "attack", "label": "ATT\u0026CK", "level": 0, "mass": 50, "physics": true, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Active Directory", "id": "Active Directory", "label": "Active Directory", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Active Directory", "id": "Active Directory Object Creation", "label": "Active Directory Object Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Active Directory", "id": "Active Directory Object Deletion", "label": "Active Directory Object Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Active Directory", "id": "Active Directory Object Modification", "label": "Active Directory Object Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Active Directory", "id": "Active Directory Credential Request", "label": "Active Directory Credential Request", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Active Directory", "id": "Active Directory Object Access", "label": "Active Directory Object Access", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Application Log", "id": "Application Log", "label": "Application Log", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Application Log", "id": "Application Log Content", "label": "Application Log Content", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Certificate", "id": "Certificate", "label": "Certificate", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Certificate", "id": "Certificate Registration", "label": "Certificate Registration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Service", "id": "Cloud Service", "label": "Cloud Service", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Service", "id": "Cloud Service Metadata", "label": "Cloud Service Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Service", "id": "Cloud Service Disable", "label": "Cloud Service Disable", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Service", "id": "Cloud Service Enumeration", "label": "Cloud Service Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Service", "id": "Cloud Service Modification", "label": "Cloud Service Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Storage", "id": "Cloud Storage", "label": "Cloud Storage", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Storage", "id": "Cloud Storage Creation", "label": "Cloud Storage Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Storage", "id": "Cloud Storage Modification", "label": "Cloud Storage Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Storage", "id": "Cloud Storage Deletion", "label": "Cloud Storage Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Storage", "id": "Cloud Storage Metadata", "label": "Cloud Storage Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Storage", "id": "Cloud Storage Enumeration", "label": "Cloud Storage Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cloud Storage", "id": "Cloud Storage Access", "label": "Cloud Storage Access", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cluster", "id": "Cluster", "label": "Cluster", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Cluster", "id": "Cluster Metadata", "label": "Cluster Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Command", "id": "Command", "label": "Command", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Command", "id": "Command Execution", "label": "Command Execution", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Container", "id": "Container", "label": "Container", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Container", "id": "Container Creation", "label": "Container Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Container", "id": "Container Metadata", "label": "Container Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Container", "id": "Container Enumeration", "label": "Container Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Container", "id": "Container Start", "label": "Container Start", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Domain Name", "id": "Domain Name", "label": "Domain Name", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Domain Name", "id": "Passive DNS", "label": "Passive DNS", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Domain Name", "id": "Active DNS", "label": "Active DNS", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Domain Name", "id": "Domain Registration", "label": "Domain Registration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Drive", "id": "Drive", "label": "Drive", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Drive", "id": "Drive Creation", "label": "Drive Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Drive", "id": "Drive Modification", "label": "Drive Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Drive", "id": "Drive Access", "label": "Drive Access", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Driver", "id": "Driver", "label": "Driver", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Driver", "id": "Driver Metadata", "label": "Driver Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Driver", "id": "Driver Load", "label": "Driver Load", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "File", "id": "File", "label": "File", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "File", "id": "File Metadata", "label": "File Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "File", "id": "File Creation", "label": "File Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "File", "id": "File Deletion", "label": "File Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "File", "id": "File Access", "label": "File Access", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "File", "id": "File Modification", "label": "File Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Firewall", "id": "Firewall", "label": "Firewall", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Firewall", "id": "Firewall Metadata", "label": "Firewall Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Firewall", "id": "Firewall Disable", "label": "Firewall Disable", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Firewall", "id": "Firewall Rule Modification", "label": "Firewall Rule Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Firewall", "id": "Firewall Enumeration", "label": "Firewall Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Firmware", "id": "Firmware", "label": "Firmware", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Firmware", "id": "Firmware Modification", "label": "Firmware Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Group", "id": "Group", "label": "Group", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Group", "id": "Group Metadata", "label": "Group Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Group", "id": "Group Enumeration", "label": "Group Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Group", "id": "Group Modification", "label": "Group Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Image", "id": "Image", "label": "Image", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Image", "id": "Image Creation", "label": "Image Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Image", "id": "Image Modification", "label": "Image Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Image", "id": "Image Deletion", "label": "Image Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Image", "id": "Image Metadata", "label": "Image Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Instance", "id": "Instance", "label": "Instance", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Instance", "id": "Instance Creation", "label": "Instance Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Instance", "id": "Instance Modification", "label": "Instance Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Instance", "id": "Instance Deletion", "label": "Instance Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Instance", "id": "Instance Metadata", "label": "Instance Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Instance", "id": "Instance Enumeration", "label": "Instance Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Instance", "id": "Instance Start", "label": "Instance Start", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Instance", "id": "Instance Stop", "label": "Instance Stop", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Internet Scan", "id": "Internet Scan", "label": "Internet Scan", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Internet Scan", "id": "Response Metadata", "label": "Response Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Internet Scan", "id": "Response Content", "label": "Response Content", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Kernel", "id": "Kernel", "label": "Kernel", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Kernel", "id": "Kernel Module Load", "label": "Kernel Module Load", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Logon Session", "id": "Logon Session", "label": "Logon Session", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Logon Session", "id": "Logon Session Metadata", "label": "Logon Session Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Logon Session", "id": "Logon Session Creation", "label": "Logon Session Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Malware Repository", "id": "Malware Repository", "label": "Malware Repository", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Malware Repository", "id": "Malware Metadata", "label": "Malware Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Malware Repository", "id": "Malware Content", "label": "Malware Content", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Module", "id": "Module", "label": "Module", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Module", "id": "Module Load", "label": "Module Load", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Named Pipe", "id": "Named Pipe", "label": "Named Pipe", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Named Pipe", "id": "Named Pipe Metadata", "label": "Named Pipe Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Network Share", "id": "Network Share", "label": "Network Share", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Network Share", "id": "Network Share Access", "label": "Network Share Access", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Network Traffic", "id": "Network Traffic", "label": "Network Traffic", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Network Traffic", "id": "Network Traffic Flow", "label": "Network Traffic Flow", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Network Traffic", "id": "Network Traffic Content", "label": "Network Traffic Content", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Network Traffic", "id": "Network Connection Creation", "label": "Network Connection Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Persona", "id": "Persona", "label": "Persona", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Persona", "id": "Social Media", "label": "Social Media", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Pod", "id": "Pod", "label": "Pod", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Pod", "id": "Pod Creation", "label": "Pod Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Pod", "id": "Pod Modification", "label": "Pod Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Pod", "id": "Pod Metadata", "label": "Pod Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Pod", "id": "Pod Enumeration", "label": "Pod Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Process", "id": "Process", "label": "Process", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Process", "id": "Process Metadata", "label": "Process Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Process", "id": "Process Creation", "label": "Process Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Process", "id": "Process Termination", "label": "Process Termination", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Process", "id": "Process Modification", "label": "Process Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Process", "id": "Process Access", "label": "Process Access", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Process", "id": "OS API Execution", "label": "OS API Execution", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Scheduled Job", "id": "Scheduled Job", "label": "Scheduled Job", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Scheduled Job", "id": "Scheduled Job Metadata", "label": "Scheduled Job Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Scheduled Job", "id": "Scheduled Job Creation", "label": "Scheduled Job Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Scheduled Job", "id": "Scheduled Job Modification", "label": "Scheduled Job Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Script", "id": "Script", "label": "Script", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Script", "id": "Script Execution", "label": "Script Execution", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Sensor Health", "id": "Sensor Health", "label": "Sensor Health", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Sensor Health", "id": "Host Status", "label": "Host Status", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Service", "id": "Service", "label": "Service", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Service", "id": "Service Metadata", "label": "Service Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Service", "id": "Service Creation", "label": "Service Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Service", "id": "Service Modification", "label": "Service Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Snapshot", "id": "Snapshot", "label": "Snapshot", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Snapshot", "id": "Snapshot Creation", "label": "Snapshot Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Snapshot", "id": "Snapshot Modification", "label": "Snapshot Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Snapshot", "id": "Snapshot Deletion", "label": "Snapshot Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Snapshot", "id": "Snapshot Metadata", "label": "Snapshot Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Snapshot", "id": "Snapshot Enumeration", "label": "Snapshot Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "User Account", "id": "User Account", "label": "User Account", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "User Account", "id": "User Account Metadata", "label": "User Account Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "User Account", "id": "User Account Creation", "label": "User Account Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "User Account", "id": "User Account Deletion", "label": "User Account Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "User Account", "id": "User Account Modification", "label": "User Account Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "User Account", "id": "User Account Authentication", "label": "User Account Authentication", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Volume", "id": "Volume", "label": "Volume", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Volume", "id": "Volume Creation", "label": "Volume Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Volume", "id": "Volume Modification", "label": "Volume Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Volume", "id": "Volume Deletion", "label": "Volume Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Volume", "id": "Volume Metadata", "label": "Volume Metadata", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Volume", "id": "Volume Enumeration", "label": "Volume Enumeration", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Web Credential", "id": "Web Credential", "label": "Web Credential", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Web Credential", "id": "Web Credential Creation", "label": "Web Credential Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Web Credential", "id": "Web Credential Usage", "label": "Web Credential Usage", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Windows Registry", "id": "Windows Registry", "label": "Windows Registry", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Windows Registry", "id": "Windows Registry Key Creation", "label": "Windows Registry Key Creation", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Windows Registry", "id": "Windows Registry Key Deletion", "label": "Windows Registry Key Deletion", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Windows Registry", "id": "Windows Registry Key Modification", "label": "Windows Registry Key Modification", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "Windows Registry", "id": "Windows Registry Key Access", "label": "Windows Registry Key Access", "level": 2, "mass": 5, "shape": "dot"}, {"font": {"color": "#111"}, "group": "WMI", "id": "WMI", "label": "WMI", "level": 1, "mass": 10, "shape": "dot"}, {"font": {"color": "#111"}, "group": "WMI", "id": "WMI Creation", "label": "WMI Creation", "level": 2, "mass": 5, "shape": "dot"}]);
+        edges = new vis.DataSet([{"from": "Active Directory", "to": "attack"}, {"from": "Active Directory Object Creation", "to": "Active Directory"}, {"from": "Active Directory Object Deletion", "to": "Active Directory"}, {"from": "Active Directory Object Modification", "to": "Active Directory"}, {"from": "Active Directory Credential Request", "to": "Active Directory"}, {"from": "Active Directory Object Access", "to": "Active Directory"}, {"from": "Application Log", "to": "attack"}, {"from": "Application Log Content", "to": "Application Log"}, {"from": "Certificate", "to": "attack"}, {"from": "Certificate Registration", "to": "Certificate"}, {"from": "Cloud Service", "to": "attack"}, {"from": "Cloud Service Metadata", "to": "Cloud Service"}, {"from": "Cloud Service Disable", "to": "Cloud Service"}, {"from": "Cloud Service Enumeration", "to": "Cloud Service"}, {"from": "Cloud Service Modification", "to": "Cloud Service"}, {"from": "Cloud Storage", "to": "attack"}, {"from": "Cloud Storage Creation", "to": "Cloud Storage"}, {"from": "Cloud Storage Modification", "to": "Cloud Storage"}, {"from": "Cloud Storage Deletion", "to": "Cloud Storage"}, {"from": "Cloud Storage Metadata", "to": "Cloud Storage"}, {"from": "Cloud Storage Enumeration", "to": "Cloud Storage"}, {"from": "Cloud Storage Access", "to": "Cloud Storage"}, {"from": "Cluster", "to": "attack"}, {"from": "Cluster Metadata", "to": "Cluster"}, {"from": "Command", "to": "attack"}, {"from": "Command Execution", "to": "Command"}, {"from": "Container", "to": "attack"}, {"from": "Container Creation", "to": "Container"}, {"from": "Container Metadata", "to": "Container"}, {"from": "Container Enumeration", "to": "Container"}, {"from": "Container Start", "to": "Container"}, {"from": "Domain Name", "to": "attack"}, {"from": "Passive DNS", "to": "Domain Name"}, {"from": "Active DNS", "to": "Domain Name"}, {"from": "Domain Registration", "to": "Domain Name"}, {"from": "Drive", "to": "attack"}, {"from": "Drive Creation", "to": "Drive"}, {"from": "Drive Modification", "to": "Drive"}, {"from": "Drive Access", "to": "Drive"}, {"from": "Driver", "to": "attack"}, {"from": "Driver Metadata", "to": "Driver"}, {"from": "Driver Load", "to": "Driver"}, {"from": "File", "to": "attack"}, {"from": "File Metadata", "to": "File"}, {"from": "File Creation", "to": "File"}, {"from": "File Deletion", "to": "File"}, {"from": "File Access", "to": "File"}, {"from": "File Modification", "to": "File"}, {"from": "Firewall", "to": "attack"}, {"from": "Firewall Metadata", "to": "Firewall"}, {"from": "Firewall Disable", "to": "Firewall"}, {"from": "Firewall Rule Modification", "to": "Firewall"}, {"from": "Firewall Enumeration", "to": "Firewall"}, {"from": "Firmware", "to": "attack"}, {"from": "Firmware Modification", "to": "Firmware"}, {"from": "Group", "to": "attack"}, {"from": "Group Metadata", "to": "Group"}, {"from": "Group Enumeration", "to": "Group"}, {"from": "Group Modification", "to": "Group"}, {"from": "Image", "to": "attack"}, {"from": "Image Creation", "to": "Image"}, {"from": "Image Modification", "to": "Image"}, {"from": "Image Deletion", "to": "Image"}, {"from": "Image Metadata", "to": "Image"}, {"from": "Instance", "to": "attack"}, {"from": "Instance Creation", "to": "Instance"}, {"from": "Instance Modification", "to": "Instance"}, {"from": "Instance Deletion", "to": "Instance"}, {"from": "Instance Metadata", "to": "Instance"}, {"from": "Instance Enumeration", "to": "Instance"}, {"from": "Instance Start", "to": "Instance"}, {"from": "Instance Stop", "to": "Instance"}, {"from": "Internet Scan", "to": "attack"}, {"from": "Response Metadata", "to": "Internet Scan"}, {"from": "Response Content", "to": "Internet Scan"}, {"from": "Kernel", "to": "attack"}, {"from": "Kernel Module Load", "to": "Kernel"}, {"from": "Logon Session", "to": "attack"}, {"from": "Logon Session Metadata", "to": "Logon Session"}, {"from": "Logon Session Creation", "to": "Logon Session"}, {"from": "Malware Repository", "to": "attack"}, {"from": "Malware Metadata", "to": "Malware Repository"}, {"from": "Malware Content", "to": "Malware Repository"}, {"from": "Module", "to": "attack"}, {"from": "Module Load", "to": "Module"}, {"from": "Named Pipe", "to": "attack"}, {"from": "Named Pipe Metadata", "to": "Named Pipe"}, {"from": "Network Share", "to": "attack"}, {"from": "Network Share Access", "to": "Network Share"}, {"from": "Network Traffic", "to": "attack"}, {"from": "Network Traffic Flow", "to": "Network Traffic"}, {"from": "Network Traffic Content", "to": "Network Traffic"}, {"from": "Network Connection Creation", "to": "Network Traffic"}, {"from": "Persona", "to": "attack"}, {"from": "Social Media", "to": "Persona"}, {"from": "Pod", "to": "attack"}, {"from": "Pod Creation", "to": "Pod"}, {"from": "Pod Modification", "to": "Pod"}, {"from": "Pod Metadata", "to": "Pod"}, {"from": "Pod Enumeration", "to": "Pod"}, {"from": "Process", "to": "attack"}, {"from": "Process Metadata", "to": "Process"}, {"from": "Process Creation", "to": "Process"}, {"from": "Process Termination", "to": "Process"}, {"from": "Process Modification", "to": "Process"}, {"from": "Process Access", "to": "Process"}, {"from": "OS API Execution", "to": "Process"}, {"from": "Scheduled Job", "to": "attack"}, {"from": "Scheduled Job Metadata", "to": "Scheduled Job"}, {"from": "Scheduled Job Creation", "to": "Scheduled Job"}, {"from": "Scheduled Job Modification", "to": "Scheduled Job"}, {"from": "Script", "to": "attack"}, {"from": "Script Execution", "to": "Script"}, {"from": "Sensor Health", "to": "attack"}, {"from": "Host Status", "to": "Sensor Health"}, {"from": "Service", "to": "attack"}, {"from": "Service Metadata", "to": "Service"}, {"from": "Service Creation", "to": "Service"}, {"from": "Service Modification", "to": "Service"}, {"from": "Snapshot", "to": "attack"}, {"from": "Snapshot Creation", "to": "Snapshot"}, {"from": "Snapshot Modification", "to": "Snapshot"}, {"from": "Snapshot Deletion", "to": "Snapshot"}, {"from": "Snapshot Metadata", "to": "Snapshot"}, {"from": "Snapshot Enumeration", "to": "Snapshot"}, {"from": "User Account", "to": "attack"}, {"from": "User Account Metadata", "to": "User Account"}, {"from": "User Account Creation", "to": "User Account"}, {"from": "User Account Deletion", "to": "User Account"}, {"from": "User Account Modification", "to": "User Account"}, {"from": "User Account Authentication", "to": "User Account"}, {"from": "Volume", "to": "attack"}, {"from": "Volume Creation", "to": "Volume"}, {"from": "Volume Modification", "to": "Volume"}, {"from": "Volume Deletion", "to": "Volume"}, {"from": "Volume Metadata", "to": "Volume"}, {"from": "Volume Enumeration", "to": "Volume"}, {"from": "Web Credential", "to": "attack"}, {"from": "Web Credential Creation", "to": "Web Credential"}, {"from": "Web Credential Usage", "to": "Web Credential"}, {"from": "Windows Registry", "to": "attack"}, {"from": "Windows Registry Key Creation", "to": "Windows Registry"}, {"from": "Windows Registry Key Deletion", "to": "Windows Registry"}, {"from": "Windows Registry Key Modification", "to": "Windows Registry"}, {"from": "Windows Registry Key Access", "to": "Windows Registry"}, {"from": "WMI", "to": "attack"}, {"from": "WMI Creation", "to": "WMI"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
